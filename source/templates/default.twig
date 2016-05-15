@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>{{ title ? title ~ ' - ' ~ meta_title : meta_title }}</title>
+	
+	<meta name="description" content="{{ meta_description }}">
+	<meta name="keywords" content="{{ meta_keywords }}">
+
+	<link href="{{ baseUrl() }}/css/bootstrap.min.css" rel="stylesheet">
+	<link href="{{ baseUrl() }}/css/dropzone.min.css" rel="stylesheet">
+	<link href="{{ baseUrl() }}/css/font-awesome.min.css" rel="stylesheet">
+	<link href="{{ baseUrl() }}/css/bitwappy.css" rel="stylesheet">
+
+	<link href="http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+	<link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+
+	<link rel="icon" href="{{ baseUrl() }}/favicon.png" type="image/x-icon"/>
+	<link rel="shortcut icon" href="{{ baseUrl() }}/favicon.png" type="image/x-icon"/>
+
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+</head>
+<body>
+	<nav class="navbar navbar-custom navbar-top" role="navigation">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-main-collapse">
+					<i class="fa fa-bars"></i>
+				</button>
+				<a class="navbar-brand" href="{{ urlFor('home') }}">
+					<span><img src="{{ baseUrl() }}/img/bitwappy-icon-brand.svg" alt="Brand"></span> {{ meta_title }}
+				</a>
+			</div>
+
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="collapse navbar-collapse navbar-right navbar-main-collapse">
+				<ul class="nav navbar-nav">
+					<!-- Hidden li included to remove active class from about link when scrolled up past about section -->
+					<li class="hidden active">
+						<a href="{{ urlFor('home') }}"></a>
+					</li>
+					<li class="">
+						<a class="page-scroll" href="{{ baseUrl() }}/about">About</a>
+					</li>
+					<li class="">
+						<a class="page-scroll" href="{{ baseUrl() }}/support">Support</a>
+					</li>
+					<li class="">
+						<a class="page-scroll" href="{{ baseUrl() }}/contact">Contact</a>
+					</li>
+				</ul>
+			</div>
+			<!-- /.navbar-collapse -->
+		</div>
+		<!-- /.container -->
+	</nav>
+
+	<div class="container-fluid" id="content">
+		<div class="container">
+			<div class="row">
+				{% block content %}
+				
+				{% endblock %}
+			</div>
+		</div>
+	</div>
+
+	<footer class="text-center">
+		<div class="footer-above">
+			<div class="container">
+				<div class="row">
+					<div class="footer-col col-md-4">
+						<h3>Location</h3>
+						<p>3481 Melrose Place<br>Beverly Hills, CA 90210</p>
+					</div>
+					<div class="footer-col col-md-4">
+					<h3>Around the Web</h3>
+						<ul class="list-inline">
+							<li>
+								<a href="https://facebook.com/bitwappy" target="_blank" class="btn-social btn-outline"><i class="fa fa-fw fa-facebook"></i></a>
+							</li>
+							<li>
+								<a href="https://twitter.com/bitwappy" target="_blank" class="btn-social btn-outline"><i class="fa fa-fw fa-twitter"></i></a>
+							</li>
+							<li>
+								<a href="https://github.com/MadnessFreak/Bitwappy" target="_blank" class="btn-social btn-outline"><i class="fa fa-fw fa-github"></i></a>
+							</li>
+						</ul>
+					</div>
+					<div class="footer-col col-md-4">
+						<h3>About Bitwappy</h3>
+						<p>Bitwappy is a free to use, open source and secure file uploading and sharing platform.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="footer-below">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12">
+						{{ meta_title }} 2016 — Made with &#9829; by MadnessFreak.
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
+
+	<script src="//code.jquery.com/jquery-1.8.3.min.js"></script>
+	<script src="{{ baseUrl() }}/js/bootstrap.min.js"></script>
+	<script src="{{ baseUrl() }}/js/dropzone.min.js"></script>
+	<script src="{{ baseUrl() }}/js/jsencrypt.js"></script>
+	<script type="text/javascript">
+		$(function()
+		{
+			readFile = function(file)
+			{
+				console.log('Reading file ...');
+				var reader = new FileReader();
+				reader.onload = function(event)
+				{
+					var binary = btoa(event.target.result);
+					var crypted = encryptFile(binary);
+
+					$('#file-input').html(crypted);
+				};
+				reader.readAsBinaryString(file);
+			};
+
+			encryptFile = function(file)
+			{
+				// Encrypt with the public key...
+				var encrypt = new JSEncrypt();
+				encrypt.setPublicKey($('#public-key').val());
+
+				var encrypted = encrypt.encrypt(file);
+				return encrypted;
+			};
+
+			$('#wappy').dropzone(
+			{
+				url: "{{ urlFor('upload') }}",
+				maxFilesize: 2,
+				accept: function(file, done)
+				{
+					readFile(file);
+					if (file.name == "justinbieber.jpg")
+					{
+						done("Naha, you don't.");
+					}
+					else
+					{
+						done();
+					}
+				}
+			});
+
+			$('#encode').click(function()
+			{
+				// Encrypt with the public key...
+				var encrypt = new JSEncrypt();
+				encrypt.setPublicKey($('#public_key').val());
+
+				var encrypted = encrypt.encrypt($('#input').val());
+				$('#input').val(encrypted);
+			});
+
+			$('#decode').click(function()
+			{
+				var encrypted = $('#input').val();
+
+				// Decrypt with the private key...
+				var decrypt = new JSEncrypt();
+				decrypt.setPrivateKey($('#private_key').val());
+
+				var uncrypted = decrypt.decrypt(encrypted);
+				$('#input').val(uncrypted);
+			});
+		});
+	</script>
+</body>
+</html>

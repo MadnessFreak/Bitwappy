@@ -1,0 +1,26 @@
+{
+    "name": "madnessfreak/bitwappy",
+    "description": "Easy and secure file uploading and sharing.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "MadnessFreak",
+            "email": "hello@bitwappy.co"
+        }
+    ],
+    "minimum-stability": "beta",
+    "autoload": {
+        "psr-4": {
+            "Bitwappy\\": "bitwappy"
+        }
+    },
+    "require": {
+        "php": ">=5.3.0",
+        "twbs/bootstrap": "^3.3",
+        "enyo/dropzone": "^4.3",
+        "slim/slim": "2.*",
+        "slim/views": "0.*",
+        "twig/twig": "1.*",
+        "twig/extensions": "^1.3"
+    }
+}
